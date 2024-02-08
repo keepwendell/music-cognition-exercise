@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音乐认知锻炼 - 作者：Dengyanwei</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 20px;
+            display: flex; /* Add flex display */
+            align-items: center; /* Align items in the center */
+        }
+
+        label {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 80%;
+            height: 10px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            margin-bottom: 10px;
+        }
+
+        input[type="range"]:hover {
+            opacity: 1;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4caf50;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4caf50;
+            cursor: pointer;
+        }
+
+        button {
+            font-size: 1em;
+            padding: 8px 16px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+            display: flex; /* Add flex display */
+            align-items: center; /* Align items in the center */
+        }
+
+        .action-buttons button {
+            margin-right: 10px;
+            font-size: 1em;
+        }
+
+        .action-buttons button:disabled {
+            background-color: #dddddd; /* Change to desired gray color */
+            cursor: not-allowed;
+        }
+
+        #generatedNumbers {
+            margin-top: 20px;
+            font-size: 1em;
+        }
+
+        .generated-number {
+            display: inline-block;
+            font-size: 1.5em;
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid #4caf50;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-box {
+            margin-top: 20px;
+        }
+
+        .solfeggio-textbox {
+            width: 40px;
+            height: 30px;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 5px;
+            border: 2px solid #4caf50;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #2196F3; /* 蓝色 */
+        }
+
+        .english-textbox {
+            width: 40px;
+            height: 30px;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 5px;
+            border: 2px solid #4caf50;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #FF9800; /* 橙色 */
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>音乐认知锻炼 - 作者：Dengyanwei</h1>
+
+    <div class="container">
+        <label for="num_count">选择位数：</label>
+        <input type="range" id="num_count" min="1" max="10">
+        <span id="rangeValue">6</span>
+    </div>
+
+    <button onclick="generateNumbers()">生成简谱</button>
+
+    <div id="generatedNumbers"></div>
+
+    <div class="answer-box">
+        <p>唱名：</p>
+        <div id="solfeggioAnswers"></div>
+    </div>
+
+    <div class="answer-box">
+        <p>英文：</p>
+        <div id="englishAnswers"></div>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <div class="action-buttons">
+        <button id="solfeggioButton" onclick="showSolfeggioNames()">查看唱名</button>
+        <button id="englishButton" onclick="showEnglishNames()">查看英文</button>
+    </div>
+
+    <script>
+        document.getElementById('num_count').addEventListener('input', function() {
+            document.getElementById('rangeValue').innerText = this.value;
+        });
+
+        let generatedNumbers = [];
+
+        function generateNumbers() {
+            const numCount = document.getElementById('num_count').value;
+            const generatedNumbersDiv = document.getElementById('generatedNumbers');
+            const messageDiv = document.getElementById('message');
+            const solfeggioAnswersDiv = document.getElementById('solfeggioAnswers');
+            const englishAnswersDiv = document.getElementById('englishAnswers');
+            const solfeggioButton = document.getElementById('solfeggioButton');
+            const englishButton = document.getElementById('englishButton');
+
+            generatedNumbers = [];
+
+            for (let i = 0; i < numCount; i++) {
+                const number = Math.floor(Math.random() * 7) + 1;
+                generatedNumbers.push(number);
+            }
+
+            generatedNumbersDiv.innerHTML = `<p>生成的简谱数字：</p>`;
+            solfeggioAnswersDiv.innerHTML = '';
+            englishAnswersDiv.innerHTML = '';
+
+            generatedNumbers.forEach(number => {
+                const numberDiv = document.createElement('div');
+                numberDiv.classList.add('generated-number');
+                numberDiv.textContent = number;
+                generatedNumbersDiv.appendChild(numberDiv);
+            });
+
+            // 清空其他答案文本框
+            document.querySelectorAll('.solfeggio-textbox, .english-textbox').forEach(textbox => {
+                textbox.value = '*';
+            });
+
+            messageDiv.textContent = ''; // 清空之前的消息
+            solfeggioButton.disabled = false; // Enable the button
+            englishButton.disabled = false; // Enable the button
+        }
+
+        function showSolfeggioNames() {
+            const solfeggioAnswersDiv = document.getElementById('solfeggioAnswers');
+            const messageDiv = document.getElementById('message');
+            const solfeggioButton = document.getElementById('solfeggioButton');
+            
+            if (generatedNumbers.length === 0) {
+                messageDiv.textContent = '请先生成数字';
+                return;
+            }
+
+            const solfeggioNames = generatedNumbers.map(number_to_solfeggio);
+            solfeggioAnswersDiv.innerHTML = '';
+            solfeggioNames.forEach(name => {
+                const answerTextbox = document.createElement('input');
+                answerTextbox.classList.add('solfeggio-textbox');
+                answerTextbox.value = name;
+                answerTextbox.readOnly = true;
+                solfeggioAnswersDiv.appendChild(answerTextbox);
+            });
+
+            solfeggioButton.disabled = true; // Disable the button
+            messageDiv.textContent = ''; // 清空之前的消息
+        }
+
+        function showEnglishNames() {
+            const englishAnswersDiv = document.getElementById('englishAnswers');
+            const messageDiv = document.getElementById('message');
+            const englishButton = document.getElementById('englishButton');
+
+            if (generatedNumbers.length === 0) {
+                messageDiv.textContent = '请先生成数字';
+                return;
+            }
+
+            const englishNames = generatedNumbers.map(number_to_english);
+            englishAnswersDiv.innerHTML = '';
+            englishNames.forEach(name => {
+                const answerTextbox = document.createElement('input');
+                answerTextbox.classList.add('english-textbox');
+                answerTextbox.value = name;
+                answerTextbox.readOnly = true;
+                englishAnswersDiv.appendChild(answerTextbox);
+            });
+
+            englishButton.disabled = true; // Disable the button
+            messageDiv.textContent = ''; // 清空之前的消息
+        }
+
+        function number_to_solfeggio(number) {
+            const solfeggioNames = ['do', 're', 'mi', 'fa', 'sol', 'la', 'ti'];
+            return solfeggioNames[number - 1];
+        }
+
+        function number_to_english(number) {
+            const englishNames = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+            return englishNames[number - 1];
+        }
+    </script>
+</body>
+</html>
